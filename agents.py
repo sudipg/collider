@@ -1,8 +1,9 @@
 
 class car(object):
     """docstring for car"""
-    def __init__(self, x, y, dx, dy):
+    def __init__(self, dir, x, y, dx, dy):
         super(car, self).__init__()
+        self.dir = dir # 1 for EW         0 for NS
         self.dx = dx
         self.dy = dy 
         self.x = x 
@@ -23,6 +24,6 @@ class car(object):
         self.dx = 0
         self.dy = 0
 
-    def start(self, dx, dy):
-        self.dx = dx
-        self.dy = dy
+    def start(self):
+        self.dx = self.dir
+        self.dy = (1-self.dir)

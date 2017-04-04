@@ -67,9 +67,22 @@ class grid_world(object):
         new_cars = []
 
         for car in self.cars:
-            car.move()
+            # follow rules! 
+            if car.dx == 0 and car.dy == 0:
+                if car.dir == 1 and self.signal == SIGNAL_EW:
+                    car.start()
+                elif car.dir == 0 and self.signal == SIGNAL_NS:
+                    car.start()
+            elif car.dx > 0 and self.signal == SIGNAL_NS:
+                car.stop()
+            elif car.dy > 0 and self.signal == SIGNAL_EW:
+                car.stop()
             if car.x < self.width and car.y < self.height:
-                new_cars.append(car)
+                self.cells[car.y][car.x].item = EMPTY
+                car.move()
+                if car.x < self.width and car.y < self.height:
+                    self.cells[car.y][car.x].item = CAR
+                    new_cars.append(car)
 
         self.cars = new_cars
 
@@ -95,12 +108,13 @@ class grid_world(object):
         new_car = None
         if np.random.choice((0,1)): # NS
             for x in range(self.road_x_start, self.road_x_end):
-                if random.random() < SPAWN_CHANCE:
-                    new_car = car(x, 0, 0, 1)
+                if random.random() < SPAWN_CHANCE and self.cells[0][x].item == EMPTY:
+                    new_car = car(0, x, 0, 0, 1)
         else: # EW
             for y in range(self.road_y_start, self.road_y_end):
-                if random.random() < SPAWN_CHANCE:
-                    new_car = car(0, y, 1, 0)
+                if random.random() < SPAWN_CHANCE and self.cells[y][0].item == EMPTY:
+                    new_car = car(1, 0, y, 1, 0)
             
         if new_car:
             self.cars.append(new_car)
+            self.cells[new_car.y][new_car.x].item = CAR
