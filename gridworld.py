@@ -12,6 +12,7 @@ COLORS = {EMPTY:(0,0,0), CAR:(255, 255, 255), COLL:(255,0,0), WALL:(50,100,50)}
 SIGNAL_INT = 100 #ticks starts as EW 
 SIGNAL_EW = 0
 SIGNAL_NS = 1
+NUM_CARS = 20
 
 class cell(object):
     """docstring for cell"""
@@ -46,18 +47,18 @@ class grid_world(object):
                 self.cells[i][j].item = EMPTY
 
         self.signal = SIGNAL_EW 
+        self.cars = []
+        self.collision_map = np.zeros((height, width))
 
     def update(self):
-        """
-        one tick of the grid world.
-        """
+        """ One tick of the grid world. """
         self.ticks += 1
-        
         # signal first
-        self.signal = SIGNAL_EW if (self.ticks / SIGNAL_INT) % 2 == 0 else SIGNAL_NS    
-
-
-
-
-
+        self.signal = SIGNAL_EW if (self.ticks / SIGNAL_INT) % 2 == 0 else SIGNAL_NS
         
+
+
+    def detect_collisions(self):
+        """ return the x,y coord of the collision else None"""
+
+    

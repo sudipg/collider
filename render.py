@@ -14,8 +14,10 @@ frame_count = 0
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-             pygame.quit(); sys.exit();
+             pygame.quit()
+             sys.exit()
     world.update()
+    collision = world.detect_collisions()
     time.sleep(1.0/60)
     screen.fill(EMPTY)
     for i in range(world.height):

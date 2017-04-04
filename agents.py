@@ -11,14 +11,14 @@ class car(object):
         self.history = [(x - dx, y - dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
         self.path = [(x + dx, y + dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
 
+    def generate_path(x, y , dx, dy):
+        return [(x+i*dx, y+i*dy) for i in range(3)]
+
     def move(self, dx, dy):
+        self.history = self.history[1:] + [(self.x, self.y)]
+        self.path = generate_path(self.x, self.y)
         self.x += dx
         self.y += dy 
+        self.history = self.history[1:]
+        self.path = self.path[:-1]
 
-
-class signal(object):
-    """docstring for signal"""
-    def __init__(self, arg):
-        super(signal, self).__init__()
-        self.arg = arg
-        
