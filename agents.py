@@ -12,7 +12,8 @@ class car(object):
         self.path = [(x + dx, y + dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
 
     def move(self, dx, dy):
-        pass
+        self.x += dx
+        self.y += dy 
 
 
 class signal(object):

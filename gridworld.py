@@ -1,4 +1,5 @@
 import numpy as np
+from agents import *
 
 EMPTY = 0
 CAR = 1
@@ -6,8 +7,11 @@ PEDESTRIAN = 2
 WALL = 3
 COLL = 4
 
-COLORS = {EMPTY:(0,0,0), CAR:(255, 255, 255), COLL:(255,0,0), WALL:(0,255,0)}
+COLORS = {EMPTY:(0,0,0), CAR:(255, 255, 255), COLL:(255,0,0), WALL:(50,100,50)}
 
+SIGNAL_INT = 100 #ticks starts as EW 
+SIGNAL_EW = 0
+SIGNAL_NS = 1
 
 class cell(object):
     """docstring for cell"""
@@ -23,6 +27,7 @@ class grid_world(object):
     
     def __init__(self, width = 100, height = 100, cell_size = 5):
         super(grid_world, self).__init__()
+        self.ticks = 0
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -40,9 +45,18 @@ class grid_world(object):
             for i in range(height):
                 self.cells[i][j].item = EMPTY
 
+        self.signal = SIGNAL_EW 
 
     def update(self):
-        pass
+        """
+        one tick of the grid world.
+        """
+        self.ticks += 1
+        
+        # signal first
+        self.signal = SIGNAL_EW if (self.ticks / SIGNAL_INT) % 2 == 0 else SIGNAL_NS    
+
+
 
 
 
