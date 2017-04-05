@@ -14,10 +14,11 @@ COLORS = {EMPTY:(0,0,0), CAR:(255, 255, 255), COLL:(255,0,0), WALL:(50,100,50)}
 SIGNAL_EW = 0
 SIGNAL_NS = 1
 SIGNAL_YELLOW = 2
-SIGNAL_INT = {SIGNAL_EW:20, SIGNAL_YELLOW:10, SIGNAL_NS:20} #ticks starts as EW
+SIGNAL_INT = {SIGNAL_EW:30, SIGNAL_YELLOW:10, SIGNAL_NS:30} #ticks starts as EW
 SIGNAL_SEQ = [SIGNAL_EW, SIGNAL_YELLOW, SIGNAL_NS, SIGNAL_YELLOW]
 NUM_CARS = 20
 SPAWN_CHANCE = 0.1
+DRIVER_STUPIDITY = 0.05 # chance of jumping red 
 
 class cell(object):
     """docstring for cell"""
@@ -59,11 +60,15 @@ class grid_world(object):
         self.collision_map = np.zeros((height, width))
         self.signal_count = 0
         self.time_on_signal = 0
+        self.signal_trigger = True
 
     def update_signal(self):
         if self.time_on_signal < SIGNAL_INT[self.signal]:
             self.time_on_signal += 1
+            if self.time_on_signal > 1:
+                self.signal_trigger = False
         else:
+            self.signal_trigger = True
             self.signal_count += 1
             self.time_on_signal = 0
             self.signal = SIGNAL_SEQ[self.signal_count%4]
@@ -80,7 +85,9 @@ class grid_world(object):
         new_cars = []
 
         for car in self.cars:
-            # follow rules! 
+            if self.signal_trigger and SIGNAL_SEQ[(self.signal_count-1)%4] == SIGNAL_YELLOW:
+                car.start()
+            # follow rules! execute on light change only 
             if self.signal == SIGNAL_YELLOW: # special rules for yellow light - clear intersection only.
                 if car.dir == 0 and car.y < self.road_y_start:
                     car.stop()
@@ -92,10 +99,36 @@ class grid_world(object):
                         car.start()
                     elif car.dir == 0 and self.signal == SIGNAL_NS:
                         car.start()
-                elif car.dx > 0 and self.signal == SIGNAL_NS:
-                    car.stop()
-                elif car.dy > 0 and self.signal == SIGNAL_EW:
-                    car.stop()
+                elif car.dx > 0 and self.signal == SIGNAL_NS and car.x < self.road_x_end:
+                    if car.jumped_light == CAR_DECIDING:
+                        if not self.car_see_empty(car):
+                            car.stop()
+                            car.jumped_light = CAR_OBEYED
+                        elif car.x == self.road_x_start-1:
+                            if random.random() > DRIVER_STUPIDITY:
+                                car.stop()
+                                car.jumped_light = CAR_OBEYED
+                            else:
+                                car.jumped_light = CAR_JUMPED
+                        else:
+                            car.jumped_light = CAR_DECIDING
+                    elif car.jumped_light == CAR_OBEYED:
+                        car.stop()
+                elif car.dy > 0 and self.signal == SIGNAL_EW and car.y < self.road_y_end:
+                    if car.jumped_light == CAR_DECIDING:
+                        if not self.car_see_empty(car):
+                                car.stop()
+                                car.jumped_light = CAR_OBEYED
+                        elif car.y == self.road_y_start - 1:
+                            if random.random() > DRIVER_STUPIDITY:
+                                car.stop()
+                                car.jumped_light = CAR_OBEYED
+                            else:
+                                car.jumped_light = CAR_JUMPED
+                        else:
+                            car.jumped_light = CAR_DECIDING  
+                    elif car.jumped_light == CAR_OBEYED:
+                        car.stop()
             if car.x < self.width and car.y < self.height:
                 self.cells[car.y][car.x].item = EMPTY
                 car.move()
@@ -105,6 +138,17 @@ class grid_world(object):
 
         self.cars = new_cars
 
+    def car_see_empty(self, car, rnge = 3):
+        if car.dir == 1:
+            for x in range(car.x+1, car.x+rnge):
+                if self.cells[car.y][x].item == CAR:
+                    return False
+            return True
+        else:
+            for y in range(car.y+1, car.y+rnge):
+                if self.cells[y][car.x].item == CAR:
+                    return False
+            return True
 
     def detect_collisions(self):
         """ return the x,y coord of the collision else None"""

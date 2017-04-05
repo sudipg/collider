@@ -1,3 +1,8 @@
+import random
+
+CAR_OBEYED = 0
+CAR_JUMPED = 1
+CAR_DECIDING = 2
 
 class car(object):
     """docstring for car"""
@@ -10,6 +15,7 @@ class car(object):
         self.y = y
         self.history = [(x - dx, y - dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
         self.path = [(x + dx, y + dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
+        self.jumped_light = CAR_DECIDING
 
     def generate_path(self, x, y , dx, dy):
         return [(x+i*dx, y+i*dy) for i in range(3)]
