@@ -18,7 +18,7 @@ SIGNAL_INT = {SIGNAL_EW:30, SIGNAL_YELLOW:10, SIGNAL_NS:30} #ticks starts as EW
 SIGNAL_SEQ = [SIGNAL_EW, SIGNAL_YELLOW, SIGNAL_NS, SIGNAL_YELLOW]
 NUM_CARS = 20
 SPAWN_CHANCE = 0.1
-DRIVER_STUPIDITY = 0.05 # chance of jumping red 
+DRIVER_STUPIDITY = 0.01 # chance of jumping red 
 
 class cell(object):
     """docstring for cell"""

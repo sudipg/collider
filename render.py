@@ -41,12 +41,13 @@ while 1:
     if collision:
         pygame.draw.rect(screen, (255, 0, 0), (collision[0] * world.cell_size, collision[1] * world.cell_size, world.cell_size, world.cell_size), 0)        
         print "crash!"
-        time.sleep(1)
 
 
     pygame.draw.circle(screen, signal_NS, (world.cell_size*2*world.width/10, world.cell_size*2*world.height/10), world.cell_size/2, 0)
     pygame.draw.circle(screen, signal_EW, (world.cell_size*8*world.width/10, world.cell_size*8*world.height/10), world.cell_size/2, 0)
     pygame.display.update()
+    if collision:
+        time.sleep(1)
     print "frame "+str(frame_count)
     print world.cars
     frame_count += 1
