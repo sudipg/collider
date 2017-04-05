@@ -18,7 +18,6 @@ SIGNAL_INT = {SIGNAL_EW:30, SIGNAL_YELLOW:10, SIGNAL_NS:30} #ticks starts as EW
 SIGNAL_SEQ = [SIGNAL_EW, SIGNAL_YELLOW, SIGNAL_NS, SIGNAL_YELLOW]
 NUM_CARS = 20
 SPAWN_CHANCE = 0.1
-DRIVER_STUPIDITY = 0.01 # chance of jumping red 
 
 class cell(object):
     """docstring for cell"""
@@ -32,7 +31,7 @@ class cell(object):
 class grid_world(object):
     """docstring for grid_world"""
     
-    def __init__(self, width = 100, height = 100, cell_size = 5):
+    def __init__(self, width = 100, height = 100, cell_size = 5, DRIVER_STUPIDITY = 0.01):
         super(grid_world, self).__init__()
         self.ticks = 0
         self.width = width
@@ -46,7 +45,7 @@ class grid_world(object):
         self.road_y_end = height - height / 3
         self.y_crossing = self.road_y_start - 1
         self.x_crossing = self.road_x_start - 1
-
+        self.DRIVER_STUPIDITY = DRIVER_STUPIDITY
 
         for i in range(self.road_y_start, self.road_y_end):
             for j in range(width):
@@ -105,7 +104,7 @@ class grid_world(object):
                             car.stop()
                             car.jumped_light = CAR_OBEYED
                         elif car.x == self.road_x_start-1:
-                            if random.random() > DRIVER_STUPIDITY:
+                            if random.random() > self.DRIVER_STUPIDITY:
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
                             else:
@@ -120,7 +119,7 @@ class grid_world(object):
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
                         elif car.y == self.road_y_start - 1:
-                            if random.random() > DRIVER_STUPIDITY:
+                            if random.random() > self.DRIVER_STUPIDITY:
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
                             else:

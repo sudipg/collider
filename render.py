@@ -6,12 +6,19 @@ from agents import *
 from gridworld import *
 
 pygame.init()
-world = grid_world(20,20,20) 
+stupidity = input("Enter driver stupidity: ")
+world = grid_world(20,20,20, stupidity) 
 
 
 screen = pygame.display.set_mode((world.height * world.cell_size, world.height * world.cell_size))
 
 frame_count = 0
+TIME_PER_FRAME = 0.01
+
+pygame.font.init()
+rec_font = pygame.font.SysFont('Comic Sans MS', 20)
+crashes = 0
+prev_crash = None
 
 while 1:
     for event in pygame.event.get():
@@ -20,7 +27,7 @@ while 1:
              sys.exit()
     world.update()
     collision = world.detect_collisions()
-    time.sleep(1.0/60)
+    time.sleep(TIME_PER_FRAME)
     screen.fill(EMPTY)
     for i in range(world.height):
         for j in range(world.width):
@@ -41,16 +48,23 @@ while 1:
     if collision:
         pygame.draw.rect(screen, (255, 0, 0), (collision[0] * world.cell_size, collision[1] * world.cell_size, world.cell_size, world.cell_size), 0)        
         print "crash!"
+        if collision != prev_crash:
+            crashes += 1
 
 
     pygame.draw.circle(screen, signal_NS, (world.cell_size*2*world.width/10, world.cell_size*2*world.height/10), world.cell_size/2, 0)
     pygame.draw.circle(screen, signal_EW, (world.cell_size*8*world.width/10, world.cell_size*8*world.height/10), world.cell_size/2, 0)
+    fc = rec_font.render(" t="+str(frame_count), False, (0, 0, 0))
+    cc = rec_font.render("crashes="+str(crashes), False, (0, 0, 0))
+    screen.blit(fc,(0,0))
+    screen.blit(cc,(0,22))
     pygame.display.update()
     if collision:
         time.sleep(1)
     print "frame "+str(frame_count)
     print world.cars
     frame_count += 1
+    prev_crash = collision
 
 pygame.display.quit()
 pygame.quit()
