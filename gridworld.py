@@ -10,9 +10,12 @@ COLL = 4
 
 COLORS = {EMPTY:(0,0,0), CAR:(255, 255, 255), COLL:(255,0,0), WALL:(50,100,50)}
 
-SIGNAL_INT = 10 #ticks starts as EW 
+ 
 SIGNAL_EW = 0
 SIGNAL_NS = 1
+SIGNAL_YELLOW = 2
+SIGNAL_INT = {SIGNAL_EW:20, SIGNAL_YELLOW:10, SIGNAL_NS:20} #ticks starts as EW
+SIGNAL_SEQ = [SIGNAL_EW, SIGNAL_YELLOW, SIGNAL_NS, SIGNAL_YELLOW]
 NUM_CARS = 20
 SPAWN_CHANCE = 0.1
 
@@ -54,12 +57,22 @@ class grid_world(object):
         self.signal = SIGNAL_EW 
         self.cars = []
         self.collision_map = np.zeros((height, width))
+        self.signal_count = 0
+        self.time_on_signal = 0
+
+    def update_signal(self):
+        if self.time_on_signal < SIGNAL_INT[self.signal]:
+            self.time_on_signal += 1
+        else:
+            self.signal_count += 1
+            self.time_on_signal = 0
+            self.signal = SIGNAL_SEQ[self.signal_count%4]
 
     def update(self):
         """ One tick of the grid world. """
         self.ticks += 1
         # signal first
-        self.signal = SIGNAL_EW if (self.ticks / SIGNAL_INT) % 2 == 0 else SIGNAL_NS
+        self.update_signal()
 
         if len(self.cars) < NUM_CARS:
             self.spawn_car()
@@ -68,15 +81,21 @@ class grid_world(object):
 
         for car in self.cars:
             # follow rules! 
-            if car.dx == 0 and car.dy == 0:
-                if car.dir == 1 and self.signal == SIGNAL_EW:
-                    car.start()
-                elif car.dir == 0 and self.signal == SIGNAL_NS:
-                    car.start()
-            elif car.dx > 0 and self.signal == SIGNAL_NS:
-                car.stop()
-            elif car.dy > 0 and self.signal == SIGNAL_EW:
-                car.stop()
+            if self.signal == SIGNAL_YELLOW: # special rules for yellow light - clear intersection only.
+                if car.dir == 0 and car.y < self.road_y_start:
+                    car.stop()
+                if car.dir == 1 and car.x < self.road_x_start:
+                    car.stop()
+            else:
+                if car.dx == 0 and car.dy == 0:
+                    if car.dir == 1 and self.signal == SIGNAL_EW:
+                        car.start()
+                    elif car.dir == 0 and self.signal == SIGNAL_NS:
+                        car.start()
+                elif car.dx > 0 and self.signal == SIGNAL_NS:
+                    car.stop()
+                elif car.dy > 0 and self.signal == SIGNAL_EW:
+                    car.stop()
             if car.x < self.width and car.y < self.height:
                 self.cells[car.y][car.x].item = EMPTY
                 car.move()

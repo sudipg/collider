@@ -34,6 +34,10 @@ while 1:
     signal_EW = (255, 0, 0) if world.signal == SIGNAL_NS else (0,255, 0)
     signal_NS = (255, 0, 0) if world.signal == SIGNAL_EW else (0,255, 0)
     
+    if world.signal == SIGNAL_YELLOW:
+        signal_NS = (255,255,0)
+        signal_EW = (255,255,0)
+
     if collision:
         pygame.draw.rect(screen, (255, 0, 0), (collision[0] * world.cell_size, collision[1] * world.cell_size, world.cell_size, world.cell_size), 0)        
         print "crash!"
