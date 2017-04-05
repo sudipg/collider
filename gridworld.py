@@ -103,7 +103,7 @@ class grid_world(object):
                         if not self.car_see_empty(car):
                             car.stop()
                             car.jumped_light = CAR_OBEYED
-                        elif car.x == self.road_x_start-1:
+                        elif car.x == self.road_x_start-1 or car.x == self.road_y_start-2:
                             if random.random() > self.DRIVER_STUPIDITY:
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
@@ -118,7 +118,7 @@ class grid_world(object):
                         if not self.car_see_empty(car):
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
-                        elif car.y == self.road_y_start - 1:
+                        elif car.y == self.road_y_start - 1 or car.y == self.road_y_start-2:
                             if random.random() > self.DRIVER_STUPIDITY:
                                 car.stop()
                                 car.jumped_light = CAR_OBEYED
