@@ -158,7 +158,7 @@ class grid_world(object):
                 if car.path[t][0] >= self.width or car.path[t][1] >= self.height:
                     continue
 
-                if self.collision_map[car.path[t]] == 1:
+                if self.collision_map[car.path[t]] == 1 and car.path[t][0] < self.road_x_end and car.path[t][0] >= self.road_x_start and car.path[t][1] >= self.road_y_start and car.path[t][1] < self.road_y_end:
                     return car.path[t]
                 else:
                     self.collision_map[car.path[t]] = 1

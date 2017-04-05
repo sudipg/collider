@@ -14,7 +14,7 @@ class car(object):
         self.x = x 
         self.y = y
         self.history = [(x - dx, y - dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
-        self.path = [(x + dx, y + dy), (x - 2*dx, y - 2*dy), (x - 3*dx, y - 3*dy)]
+        self.path = self.generate_path(x, y, dx, dy)
         self.jumped_light = CAR_DECIDING
 
     def generate_path(self, x, y , dx, dy):
