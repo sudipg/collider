@@ -39,10 +39,10 @@ class grid_world(object):
         self.cell_size = cell_size
         self.cells = [[cell(i, j, WALL) for j in range(width)] for i in range(height)]
 
-        self.road_x_start = width / 3
-        self.road_x_end = width - width / 3
-        self.road_y_start = height / 3
-        self.road_y_end = height - height / 3
+        self.road_x_start = int(width // 3)
+        self.road_x_end = int(width - width // 3)
+        self.road_y_start = int(height // 3)
+        self.road_y_end = int(height - height // 3)
         self.y_crossing = self.road_y_start - 1
         self.x_crossing = self.road_x_start - 1
         self.DRIVER_STUPIDITY = DRIVER_STUPIDITY

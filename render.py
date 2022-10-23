@@ -6,7 +6,7 @@ from agents import *
 from gridworld import *
 
 pygame.init()
-stupidity = input("Enter driver stupidity: ")
+stupidity = float(input("Enter driver stupidity: "))
 world = grid_world(20,20,20, stupidity) 
 
 
@@ -47,7 +47,7 @@ while 1:
 
     if collision:
         pygame.draw.rect(screen, (255, 0, 0), (collision[0] * world.cell_size, collision[1] * world.cell_size, world.cell_size, world.cell_size), 0)        
-        print "crash!"
+        print("crash!")
         if collision != prev_crash:
             crashes += 1
 
@@ -61,8 +61,8 @@ while 1:
     pygame.display.update()
     if collision:
         time.sleep(1)
-    print "frame "+str(frame_count)
-    print world.cars
+    print("frame "+str(frame_count))
+    print(world.cars)
     frame_count += 1
     prev_crash = collision
 
